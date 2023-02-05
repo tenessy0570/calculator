@@ -40,7 +40,7 @@ class Calculator:
         self.operators_grid: QWidget = None
         self.operators_grid_buttons = None
 
-        self.create_buttons_grid()
+        self.create_digits_grid()
         self.create_operators_grid()
         self.create_prompt_window()
 
@@ -86,7 +86,7 @@ class Calculator:
             if isinstance(columns_list, QPushButton):
                 button = columns_list
                 handle_button(button)
-                button.setGeometry(1, 3 * button_height, 2 * button_width, 1 * button_height)
+                button.setGeometry(0, 3 * button_height, 2 * button_width, 1 * button_height)
                 continue
 
             for column, button in enumerate(columns_list):
@@ -114,7 +114,7 @@ class Calculator:
         """)
         self.prompt_window.setMaxLength(8)
 
-    def create_buttons_grid(self):
+    def create_digits_grid(self):
         self.numbers_grid = QWidget(self.main_window)
         self.numbers_grid.show()
 
@@ -153,7 +153,7 @@ class Calculator:
             if isinstance(columns_list, QPushButton):
                 button = columns_list
                 handle_button(button)
-                button.setGeometry(1, 3 * button_height, 3 * button_width, 1 * button_height)
+                button.setGeometry(0, 3 * button_height, 3 * button_width, 1 * button_height)
                 continue
 
             for column, button in enumerate(columns_list):
@@ -165,5 +165,5 @@ class Calculator:
 
 
 if __name__ == '__main__':
-    calc = Calculator(800, 500)
+    calc = Calculator(1000, 600)
     calc.start()
