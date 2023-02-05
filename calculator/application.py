@@ -7,6 +7,23 @@ class Calculator:
     def __init__(self, width: int, height: int) -> None:
         self.pyqt_app = QApplication([])
 
+        self.math_multiple = "*"
+        self.math_division = "/"
+        self.math_add = "+"
+        self.math_sub = "-"
+        self.math_pow = "**"
+        self.math_mod = "%"
+        self.math_floordiv = "//"
+
+        self.math_method_by_symbol = {
+            self.math_multiple: "__mul__",
+            self.math_division: "__truediv__",
+            self.math_add: "__add__",
+            self.math_sub: "__sub__",
+            self.math_pow: "__pow__",
+            self.math_mod: "__mod__",
+            self.math_floordiv: "__floordiv__",
+        }
         self.main_window = QMainWindow()
         self.main_window.setWindowTitle("Custom calculator by tenessy0570")
         self.main_window.setFixedWidth(width)
@@ -20,8 +37,11 @@ class Calculator:
         self.numbers_grid: QWidget = None
         self.numbers_grid_buttons = None
         self.prompt_window: QLineEdit = None
+        self.operators_grid: QWidget = None
+        self.operators_grid_buttons = None
 
         self.create_buttons_grid()
+        self.create_operators_grid()
         self.create_prompt_window()
 
     def handle_number_grid_click(self, checked: bool):
@@ -29,13 +49,57 @@ class Calculator:
         value = sender.text()
         self.prompt_window.insert(value)
 
+    def create_operators_grid(self):
+        self.operators_grid = QWidget(self.main_window)
+        self.operators_grid.show()
+
+        button_width = round(self.main_window_geometry.width() * 0.13)
+        button_height = round(self.main_window_geometry.height() * 0.12)
+        grid_pos_x = round(self.numbers_grid.geometry().x() + self.numbers_grid.geometry().width()) + 5
+        grid_pos_y = self.numbers_grid.geometry().y()
+
+        self.operators_grid.setGeometry(grid_pos_x, grid_pos_y, button_width * 2, button_height * 4)
+        self.operators_grid.setStyleSheet(f"font-size: {self.font_size}px")
+
+        self.operators_grid_buttons = [
+            [
+                QPushButton(self.math_add),
+                QPushButton(self.math_sub)
+            ],
+            [
+                QPushButton(self.math_division),
+                QPushButton(self.math_multiple)
+            ],
+            [
+                QPushButton(self.math_pow),
+                QPushButton(self.math_mod),
+            ],
+            QPushButton(self.math_floordiv)
+        ]
+
+        def handle_button(btn):
+            btn.setParent(self.operators_grid)
+            btn.show()
+            btn.clicked.connect(self.handle_number_grid_click)
+
+        for row, columns_list in enumerate(self.operators_grid_buttons):
+            if isinstance(columns_list, QPushButton):
+                button = columns_list
+                handle_button(button)
+                button.setGeometry(1, 3 * button_height, 2 * button_width, 1 * button_height)
+                continue
+
+            for column, button in enumerate(columns_list):
+                handle_button(button)
+                button.setGeometry(column * button_width, row * button_height, button_width, button_height)
+
     def create_prompt_window(self):
         self.prompt_window = QLineEdit(self.main_window)
         self.prompt_window.show()
         self.prompt_window.setValidator(PromptValidator)
         numbers_grid_geometry = self.numbers_grid.geometry()
 
-        prompt_width = numbers_grid_geometry.width()
+        prompt_width = numbers_grid_geometry.width() + self.operators_grid.geometry().width() + 5
         prompt_height = round(self.main_window_geometry.height() * 0.1)
 
         prompt_pos_x = numbers_grid_geometry.x()
@@ -43,7 +107,7 @@ class Calculator:
 
         self.prompt_window.setGeometry(prompt_pos_x, prompt_pos_y, prompt_width, prompt_height)
         self.prompt_window.setStyleSheet(f"""
-            border: 2px solid black;
+            border: 1px solid black;
             padding: 0px 10px;
             border-radius: 5%;
             font-size: {self.font_size}px
@@ -80,10 +144,10 @@ class Calculator:
             QPushButton("0")
         ]
 
-        def handle_button(button):
-            button.setParent(self.numbers_grid)
-            button.show()
-            button.clicked.connect(self.handle_number_grid_click)
+        def handle_button(btn):
+            btn.setParent(self.numbers_grid)
+            btn.show()
+            btn.clicked.connect(self.handle_number_grid_click)
 
         for row, columns_list in enumerate(self.numbers_grid_buttons):
             if isinstance(columns_list, QPushButton):
