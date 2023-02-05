@@ -82,7 +82,6 @@ class Calculator:
 
         def handle_button(button):
             button.setParent(self.numbers_grid)
-            button.setGeometry(column * button_width, row * button_height, button_width, button_height)
             button.show()
             button.clicked.connect(self.handle_number_grid_click)
 
