@@ -8,6 +8,7 @@ class Calculator:
         self.pyqt_app = QApplication([])
 
         self.main_window = QMainWindow()
+        self.main_window.setWindowTitle("Custom calculator by tenessy0570")
         self.main_window.setFixedWidth(width)
         self.main_window.setFixedHeight(height)
         self.main_window_geometry = self.main_window.geometry()
