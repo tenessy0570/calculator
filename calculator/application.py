@@ -80,20 +80,22 @@ class Calculator:
             QPushButton("0")
         ]
 
+        def handle_button(button):
+            button.setParent(self.numbers_grid)
+            button.setGeometry(column * button_width, row * button_height, button_width, button_height)
+            button.show()
+            button.clicked.connect(self.handle_number_grid_click)
+
         for row, columns_list in enumerate(self.numbers_grid_buttons):
-            if not isinstance(columns_list, list):
+            if isinstance(columns_list, QPushButton):
                 button = columns_list
-                button.setParent(self.numbers_grid)
+                handle_button(button)
                 button.setGeometry(1, 3 * button_height, 3 * button_width, 1 * button_height)
-                button.show()
-                button.clicked.connect(self.handle_number_grid_click)
                 continue
 
             for column, button in enumerate(columns_list):
-                button.setParent(self.numbers_grid)
+                handle_button(button)
                 button.setGeometry(column * button_width, row * button_height, button_width, button_height)
-                button.show()
-                button.clicked.connect(self.handle_number_grid_click)
 
     def start(self) -> None:
         self.pyqt_app.exec()
