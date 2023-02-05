@@ -4,12 +4,14 @@ from calculator.validators import PromptValidator
 
 
 class Calculator:
-    def __init__(self) -> None:
+    def __init__(self, width: int, height: int) -> None:
         self.pyqt_app = QApplication([])
 
         self.main_window = QMainWindow()
-        self.main_window.setFixedWidth(1024)
-        self.main_window.setFixedHeight(602)
+        self.main_window.setFixedWidth(width)
+        self.main_window.setFixedHeight(height)
+        self.main_window_geometry = self.main_window.geometry()
+        self.font_size = round((self.main_window_geometry.height() * 0.05) + (self.main_window_geometry.width() * 0.02) / 2)
         self.main_window.show()
 
         self.numbers_grid: QWidget = None
@@ -31,16 +33,16 @@ class Calculator:
         numbers_grid_geometry = self.numbers_grid.geometry()
 
         prompt_width = numbers_grid_geometry.width()
-        prompt_height = 65
+        prompt_height = round(self.main_window_geometry.height() * 0.1)
 
         prompt_pos_x = numbers_grid_geometry.x()
         prompt_pos_y = numbers_grid_geometry.y() - 5 - prompt_height
         self.prompt_window.setGeometry(prompt_pos_x, prompt_pos_y, prompt_width, prompt_height)
-        self.prompt_window.setStyleSheet("""
+        self.prompt_window.setStyleSheet(f"""
             border: 1px solid black;
             padding: 0px 10px;
             border-radius: 5%;
-            font-size: 20px
+            font-size: {self.font_size}px
         """)
         self.prompt_window.setMaxLength(8)
 
@@ -48,12 +50,12 @@ class Calculator:
         self.numbers_grid = QWidget(self.main_window)
         self.numbers_grid.show()
 
-        button_width = 120
-        button_height = 75
-        grid_pos_x = 150
-        grid_pos_y = 200
+        button_width = round(self.main_window_geometry.width() * 0.13)
+        button_height = round(self.main_window_geometry.height() * 0.12)
+        grid_pos_x = round(self.main_window_geometry.width() * 0.10)
+        grid_pos_y = round(self.main_window_geometry.height() * 0.35)
         self.numbers_grid.setGeometry(grid_pos_x, grid_pos_y, button_width * 3, button_height * 4)
-        self.numbers_grid.setStyleSheet("font-size: 18px")
+        self.numbers_grid.setStyleSheet(f"font-size: {self.font_size}px")
 
         self.numbers_grid_buttons = [
             [
@@ -94,5 +96,5 @@ class Calculator:
 
 
 if __name__ == '__main__':
-    calc = Calculator()
+    calc = Calculator(800, 500)
     calc.start()
