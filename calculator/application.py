@@ -11,7 +11,9 @@ class Calculator:
         self.main_window.setFixedWidth(width)
         self.main_window.setFixedHeight(height)
         self.main_window_geometry = self.main_window.geometry()
-        self.font_size = round((self.main_window_geometry.height() * 0.05) + (self.main_window_geometry.width() * 0.02) / 2)
+        self.font_size = round(
+            (self.main_window_geometry.height() * 0.05) + (self.main_window_geometry.width() * 0.02) / 2
+        )
         self.main_window.show()
 
         self.numbers_grid: QWidget = None
@@ -37,9 +39,10 @@ class Calculator:
 
         prompt_pos_x = numbers_grid_geometry.x()
         prompt_pos_y = numbers_grid_geometry.y() - 5 - prompt_height
+
         self.prompt_window.setGeometry(prompt_pos_x, prompt_pos_y, prompt_width, prompt_height)
         self.prompt_window.setStyleSheet(f"""
-            border: 1px solid black;
+            border: 2px solid black;
             padding: 0px 10px;
             border-radius: 5%;
             font-size: {self.font_size}px
