@@ -81,7 +81,7 @@ class Calculator(Handleable):
         self.operation_result = None
         self.execute_button: QPushButton = None
 
-        self.calculator_window: QWidget = QWidget()
+        self.calculator_window: CalculatorWindow = None
 
         # Relative to calculator window (coefficient)
         # ----------------------------------------------------------
@@ -259,6 +259,8 @@ class Calculator(Handleable):
         self.left_digit_value = None
         self.right_digit_value = None
         self.operation_result = None
+        self.previous_right_digit_value = None
+        self.previous_operand = None
         self.prompt_window.clear()
         self.operation_window.clear()
 
