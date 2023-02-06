@@ -74,10 +74,14 @@ class Calculator:
         if self.left_number_value and self.current_operand:
             self.right_number_value = int(self.prompt_window.text())
 
-            self.operation_result = round(getattr(
+            self.operation_result: float | int = round(getattr(
                 self.left_number_value,
                 self.math_method_by_symbol[self.current_operand]
             )(self.right_number_value), 3)
+
+            if self.operation_result.is_integer():
+                self.operation_result = int(self.operation_result)
+
             self.operation_window.setText(
                 f"{self.left_number_value} {self.current_operand} {self.right_number_value} = {self.operation_result}"
             )
@@ -165,7 +169,7 @@ class Calculator:
         self.operation_window.show()
         self.operation_window.setStyleSheet(f"border: 1px solid black; font-size: {round(self.font_size * 0.5)}px")
 
-        width = round(self.prompt_window.geometry().width() * 0.6)
+        width = round(self.prompt_window.geometry().width() * 0.55)
         height = round(self.prompt_window.geometry().height() * 0.7)
         coord_x = self.prompt_window.geometry().width() - width - 5
         coord_y = round(self.prompt_window.geometry().height() * 0.1)
@@ -177,8 +181,8 @@ class Calculator:
 
         button_width = round(self.main_window_geometry.width() * 0.13)
         button_height = round(self.main_window_geometry.height() * 0.12)
-        grid_pos_x = round(self.main_window_geometry.width() * 0.10)
-        grid_pos_y = round(self.main_window_geometry.height() * 0.35)
+        grid_pos_x = round(self.main_window_geometry.width() * 0.28 - button_width)
+        grid_pos_y = round(self.main_window_geometry.height() * 0.42 - button_height)
         self.numbers_grid.setGeometry(grid_pos_x, grid_pos_y, button_width * 3, button_height * 4)
         self.numbers_grid.setStyleSheet(f"font-size: {self.font_size}px")
 
@@ -222,5 +226,5 @@ class Calculator:
 
 
 if __name__ == '__main__':
-    calc = Calculator(1000, 600)
+    calc = Calculator(1024, 512)
     calc.start()
