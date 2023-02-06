@@ -61,15 +61,21 @@ class Calculator:
     def handle_execute_button_click(self, checked: bool):
         if any((
                 self.left_number_value is None,
-                not self.current_operand,
+                self.current_operand is None,
+                not self.prompt_window.text()
         )):
             return None
 
-        if not self.prompt_window.text():
-            return None
-
         self.right_number_value = int(self.prompt_window.text())
+        self.execute_operation()
+        self.operation_window.setText(str(self.operation_result))
+        self.prompt_window.clear()
 
+        self.left_number_value = None
+        self.right_number_value = None
+        self.current_operand = None
+
+    def execute_operation(self):
         try:
             self.operation_result: float | int = round(getattr(
                 self.left_number_value,
@@ -83,9 +89,6 @@ class Calculator:
         elif isinstance(self.operation_result, float) and self.operation_result.is_integer():
             self.operation_result = int(self.operation_result)
 
-        self.operation_window.setText(str(self.operation_result))
-        self.prompt_window.clear()
-
     def handle_operands_grid_click(self, checked: bool):
         sender: QPushButton = self.operands_grid.sender()
 
@@ -98,7 +101,25 @@ class Calculator:
             self.operation_window.clear()
             return None
 
-        if not self.prompt_window.text() and self.left_number_value is None:
+        if all((
+                self.operation_result is None,
+                all((
+                        self.left_number_value is None,
+                        not self.prompt_window.text()
+                ))
+        )):
+            return None
+
+        if all((
+                not self.prompt_window.text(),
+                self.left_number_value is None,
+                self.right_number_value is None,
+                self.operation_result is not None
+        )):
+            self.left_number_value = self.operation_result
+            self.operation_result = None
+            self.current_operand = sender.text()
+            self.operation_window.setText(f"{self.left_number_value} {self.current_operand}")
             return None
 
         if all((
@@ -108,20 +129,15 @@ class Calculator:
         )):
             self.right_number_value = int(self.prompt_window.text())
 
-            try:
-                self.operation_result: float | int = round(getattr(
-                    self.left_number_value,
-                    self.math_method_by_symbol[self.current_operand]
-                )(self.right_number_value), 3)
-            except ZeroDivisionError:
-                self.operation_result = 0
-
-            if isinstance(self.operation_result, int):
-                pass
-            elif isinstance(self.operation_result, float) and self.operation_result.is_integer():
-                self.operation_result = int(self.operation_result)
+            self.execute_operation()
 
             self.operation_window.setText(str(self.operation_result))
+            self.left_number_value = self.operation_result
+            self.right_number_value = None
+            self.operation_result = None
+            self.current_operand = sender.text()
+            self.operation_window.setText(f"{self.left_number_value} {self.current_operand}")
+            self.prompt_window.clear()
             return None
 
         if self.left_number_value is not None:
