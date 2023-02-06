@@ -83,9 +83,8 @@ class Calculator:
         elif isinstance(self.operation_result, float) and self.operation_result.is_integer():
             self.operation_result = int(self.operation_result)
 
-        self.operation_window.setText(
-            f"{self.left_number_value} {self.current_operand} {self.right_number_value} = {self.operation_result}"
-        )
+        self.operation_window.setText(str(self.operation_result))
+        self.prompt_window.clear()
 
     def handle_operands_grid_click(self, checked: bool):
         sender: QPushButton = self.operands_grid.sender()
@@ -122,9 +121,7 @@ class Calculator:
             elif isinstance(self.operation_result, float) and self.operation_result.is_integer():
                 self.operation_result = int(self.operation_result)
 
-            self.operation_window.setText(
-                f"{self.left_number_value} {self.current_operand} {self.right_number_value} = {self.operation_result}"
-            )
+            self.operation_window.setText(str(self.operation_result))
             return None
 
         if self.left_number_value is not None:
@@ -141,8 +138,8 @@ class Calculator:
         self.operands_grid = QWidget(self.main_window)
         self.operands_grid.show()
 
-        button_width = round(self.main_window_geometry.width() * 0.13)
-        button_height = round(self.main_window_geometry.height() * 0.12)
+        button_width = round(self.main_window_geometry.width() * 0.11)
+        button_height = round(self.main_window_geometry.height() * 0.14)
         grid_pos_x = round(self.numbers_grid.geometry().x() + self.numbers_grid.geometry().width()) + 5
         grid_pos_y = self.numbers_grid.geometry().y()
 
@@ -230,10 +227,10 @@ class Calculator:
         self.numbers_grid = QWidget(self.main_window)
         self.numbers_grid.show()
 
-        button_width = round(self.main_window_geometry.width() * 0.13)
-        button_height = round(self.main_window_geometry.height() * 0.12)
-        grid_pos_x = round(self.main_window_geometry.width() * 0.28 - button_width)
-        grid_pos_y = round(self.main_window_geometry.height() * 0.42 - button_height)
+        button_width = round(self.main_window_geometry.width() * 0.11)
+        button_height = round(self.main_window_geometry.height() * 0.14)
+        grid_pos_x = round(self.main_window_geometry.width() * 0.31 - button_width)
+        grid_pos_y = round(self.main_window_geometry.height() * 0.35 - button_height)
         self.numbers_grid.setGeometry(grid_pos_x, grid_pos_y, button_width * 3, button_height * 4)
         self.numbers_grid.setStyleSheet(f"font-size: {self.font_size}px")
 
