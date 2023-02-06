@@ -254,6 +254,9 @@ class Calculator(Handleable):
         elif isinstance(self.operation_result, float) and self.operation_result.is_integer():
             self.operation_result = int(self.operation_result)
 
+        if len(str(self.operation_result)) > 8:
+            self.operation_result = "ERR"
+
     def clear_all(self):
         self.current_operand = None
         self.left_digit_value = None
