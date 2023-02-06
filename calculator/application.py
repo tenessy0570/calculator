@@ -51,6 +51,18 @@ class Calculator:
         self.execute_button: QPushButton = None
 
         self.calculator_window: QWidget = QWidget()
+
+        # Relative to calculator window (coefficient)
+        # ----------------------------------------------------------
+        self.prompt_window_height = 0.2
+
+        self.numbers_grid_height = 1 - self.prompt_window_height
+        self.numbers_grid_width = 0.6
+
+        self.operands_grid_width = 1 - self.numbers_grid_width
+        self.operands_grid_height = 1 - self.prompt_window_height
+        # ----------------------------------------------------------
+
         self.execute_button_width = None
         self.execute_button_height = None
         self.number_button_width = None
@@ -71,8 +83,8 @@ class Calculator:
         self.calculator_window.child_widgets = []
         self.calculator_window.show()
 
-        self.calculator_window.setFixedWidth(round(self.main_window.width() * 0.5))
-        self.calculator_window.setFixedHeight(round(self.main_window.height() * 0.6))
+        self.calculator_window.setFixedWidth(round(self.main_window.width() * 0.6))
+        self.calculator_window.setFixedHeight(round(self.main_window.height() * 0.75))
         # self.calculator_window.setStyleSheet("border: 1px solid black")
 
         self.center_widget(self.calculator_window, self.main_window)
@@ -86,11 +98,17 @@ class Calculator:
         self.numbers_grid = QWidget(self.calculator_window)
         self.numbers_grid.show()
 
-        self.number_button_width = round(self.calculator_window.width() * (0.6 / 3))
-        self.number_button_height = round(self.calculator_window.height() * (0.61 / 4))
+        self.number_button_width = round(self.calculator_window.width() * (self.numbers_grid_width / 3))
+        self.number_button_height = round(self.calculator_window.height() * (self.numbers_grid_height / 5))
         grid_pos_x = 0
         grid_pos_y = round(self.calculator_window.height() - 5 * self.number_button_height)
-        self.numbers_grid.setGeometry(grid_pos_x, grid_pos_y, self.number_button_width * 3, self.number_button_height * 4)
+
+        self.numbers_grid.setGeometry(
+            grid_pos_x,
+            grid_pos_y,
+            self.number_button_width * 3,
+            self.number_button_height * 4
+        )
         self.numbers_grid.setStyleSheet(f"font-size: {self.font_size}px;")
 
         self.numbers_grid_buttons = [
@@ -132,8 +150,8 @@ class Calculator:
         self.operands_grid = QWidget(self.calculator_window)
         self.operands_grid.show()
 
-        self.operand_button_width = round(self.calculator_window.width() * (0.40 / 2))
-        self.operand_button_height = round(self.calculator_window.height() * (0.61 / 4))
+        self.operand_button_width = round(self.calculator_window.width() * (self.operands_grid_width / 2))
+        self.operand_button_height = round(self.calculator_window.height() * (self.operands_grid_height / 5))
         grid_pos_x = round(self.calculator_window.width() - (self.operand_button_width * 2))
         grid_pos_y = self.calculator_window.height() - 5 * self.operand_button_height
 
@@ -193,7 +211,7 @@ class Calculator:
         self.prompt_window.setValidator(PromptValidator)
 
         prompt_width = self.calculator_window.width()
-        prompt_height = round(0.25 * self.calculator_window.height()) - 5
+        prompt_height = round(self.prompt_window_height * self.calculator_window.height())
 
         prompt_pos_x = 0
         prompt_pos_y = 0
@@ -246,5 +264,5 @@ class Calculator:
 
 
 if __name__ == '__main__':
-    calc = Calculator(1024, 512)
+    calc = Calculator(1324, 812)
     calc.start()
