@@ -89,16 +89,19 @@ class Calculator:
         elif isinstance(self.operation_result, float) and self.operation_result.is_integer():
             self.operation_result = int(self.operation_result)
 
+    def clear_all(self):
+        self.current_operand = None
+        self.left_number_value = None
+        self.right_number_value = None
+        self.operation_result = None
+        self.prompt_window.clear()
+        self.operation_window.clear()
+
     def handle_operands_grid_click(self, checked: bool):
         sender: QPushButton = self.operands_grid.sender()
 
         if sender.text() == self.clear_button_text:
-            self.current_operand = None
-            self.left_number_value = None
-            self.right_number_value = None
-            self.operation_result = None
-            self.prompt_window.clear()
-            self.operation_window.clear()
+            self.clear_all()
             return None
 
         if all((
