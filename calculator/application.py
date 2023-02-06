@@ -60,22 +60,27 @@ class Calculator:
 
     def handle_execute_button_click(self, checked: bool):
         if any((
-                not self.left_number_value,
+                self.left_number_value is None,
                 not self.current_operand,
         )):
             return None
 
-        if self.operation_result:
+        if not self.prompt_window.text():
             return None
 
         self.right_number_value = int(self.prompt_window.text())
 
-        self.operation_result: float | int = round(getattr(
-            self.left_number_value,
-            self.math_method_by_symbol[self.current_operand]
-        )(self.right_number_value), 3)
+        try:
+            self.operation_result: float | int = round(getattr(
+                self.left_number_value,
+                self.math_method_by_symbol[self.current_operand]
+            )(self.right_number_value), 3)
+        except ZeroDivisionError:
+            self.operation_result = 0
 
-        if isinstance(self.operation_result, float) and self.operation_result.is_integer():
+        if isinstance(self.operation_result, int):
+            pass
+        elif isinstance(self.operation_result, float) and self.operation_result.is_integer():
             self.operation_result = int(self.operation_result)
 
         self.operation_window.setText(
@@ -94,18 +99,27 @@ class Calculator:
             self.operation_window.clear()
             return None
 
-        if not self.prompt_window.text() and not self.left_number_value:
+        if not self.prompt_window.text() and self.left_number_value is None:
             return None
 
-        if self.left_number_value and self.current_operand:
+        if all((
+                self.left_number_value,
+                self.current_operand,
+                self.prompt_window.text()
+        )):
             self.right_number_value = int(self.prompt_window.text())
 
-            self.operation_result: float | int = round(getattr(
-                self.left_number_value,
-                self.math_method_by_symbol[self.current_operand]
-            )(self.right_number_value), 3)
+            try:
+                self.operation_result: float | int = round(getattr(
+                    self.left_number_value,
+                    self.math_method_by_symbol[self.current_operand]
+                )(self.right_number_value), 3)
+            except ZeroDivisionError:
+                self.operation_result = 0
 
-            if self.operation_result.is_integer():
+            if isinstance(self.operation_result, int):
+                pass
+            elif isinstance(self.operation_result, float) and self.operation_result.is_integer():
                 self.operation_result = int(self.operation_result)
 
             self.operation_window.setText(
