@@ -34,6 +34,7 @@ class Calculator:
         self.font_size = round(
             (self.main_window_geometry.height() * 0.05) + (self.main_window_geometry.width() * 0.02) / 2
         )
+        self.main_window.setStyleSheet(f"font-size: {self.font_size}px")
         self.main_window.show()
 
         self.numbers_grid: QWidget = None
@@ -46,6 +47,7 @@ class Calculator:
         self.right_number_value = None
         self.current_operand = None
         self.operation_result = None
+        self.execute_button: QPushButton = None
 
         self.create_digits_grid()
         self.create_operands_grid()
@@ -55,6 +57,30 @@ class Calculator:
         sender: QPushButton = self.numbers_grid.sender()
         value = sender.text()
         self.prompt_window.insert(value)
+
+    def handle_execute_button_click(self, checked: bool):
+        if any((
+                not self.left_number_value,
+                not self.current_operand,
+        )):
+            return None
+
+        if self.operation_result:
+            return None
+
+        self.right_number_value = int(self.prompt_window.text())
+
+        self.operation_result: float | int = round(getattr(
+            self.left_number_value,
+            self.math_method_by_symbol[self.current_operand]
+        )(self.right_number_value), 3)
+
+        if isinstance(self.operation_result, float) and self.operation_result.is_integer():
+            self.operation_result = int(self.operation_result)
+
+        self.operation_window.setText(
+            f"{self.left_number_value} {self.current_operand} {self.right_number_value} = {self.operation_result}"
+        )
 
     def handle_operands_grid_click(self, checked: bool):
         sender: QPushButton = self.operands_grid.sender()
@@ -143,6 +169,17 @@ class Calculator:
             for column, button in enumerate(columns_list):
                 handle_button(button)
                 button.setGeometry(column * button_width, row * button_height, button_width, button_height)
+
+        self.execute_button = QPushButton("=")
+        self.execute_button.setParent(self.main_window)
+        exec_btn_x = self.numbers_grid.geometry().x()
+        exec_btn_y = self.numbers_grid.geometry().y() + self.numbers_grid.geometry().height() + 5
+        exec_btn_width = self.numbers_grid.geometry().width() + 5 + self.operands_grid.geometry().width()
+        exec_btn_height = button_height
+        self.execute_button.setGeometry(exec_btn_x, exec_btn_y, exec_btn_width, exec_btn_height)
+        self.execute_button.show()
+        self.execute_button.setStyleSheet(f"font-size: {round(self.font_size * 1.2)}px")
+        self.execute_button.clicked.connect(self.handle_execute_button_click)
 
     def create_prompt_window(self):
         self.prompt_window = QLineEdit(self.main_window)
