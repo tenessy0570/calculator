@@ -228,9 +228,9 @@ class Calculator(Handleable):
         self.operation_window = QLabel(self.prompt_window)
         self.operation_window.show()
         self.operation_window.setStyleSheet(f"""
-        font-size: {round(self.main_window.font_size * 0.5)}px;
-        background-color: lightgrey
-    """)
+            font-size: {round(self.main_window.font_size * 0.5)}px;
+            background-color: lightgrey
+        """)
 
         width = round(self.prompt_window.geometry().width() * 0.55)
         height = round(self.prompt_window.geometry().height() * 0.7)
