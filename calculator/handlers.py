@@ -8,6 +8,24 @@ class Handleable:
         self.prompt_window.insert(value)
 
     def handle_execute_button_click(self):
+        if all((
+                self.previous_operand is not None,
+                self.current_operand is None,
+                self.left_digit_value is None,
+                self.operation_result is not None
+        )):
+            self.left_digit_value = self.operation_result
+            self.right_digit_value = self.previous_right_digit_value
+            self.current_operand = self.previous_operand
+            self.execute_operation()
+            self.operation_window.setText(str(self.operation_result))
+
+            self.left_digit_value = None
+            self.previous_operand = self.current_operand
+            self.current_operand = None
+            self.right_digit_value = None
+            return None
+
         if any((
                 self.left_digit_value is None,
                 self.current_operand is None,
@@ -21,7 +39,9 @@ class Handleable:
         self.prompt_window.clear()
 
         self.left_digit_value = None
+        self.previous_right_digit_value = self.right_digit_value
         self.right_digit_value = None
+        self.previous_operand = self.current_operand
         self.current_operand = None
 
     def handle_operands_grid_click(self):

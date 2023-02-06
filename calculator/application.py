@@ -75,7 +75,9 @@ class Calculator(Handleable):
         ]
         self.left_digit_value = None
         self.right_digit_value = None
+        self.previous_right_digit_value = None
         self.current_operand = None
+        self.previous_operand = None
         self.operation_result = None
         self.execute_button: QPushButton = None
 
