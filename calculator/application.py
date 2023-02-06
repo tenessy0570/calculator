@@ -2,7 +2,7 @@ from typing import Callable
 
 from PyQt6.QtWidgets import QApplication, QWidget, QPushButton, QMainWindow, QLineEdit, QLabel
 
-from calculator.handlers import handle_number_grid_click, handle_operands_grid_click, handle_execute_button_click
+from calculator.handlers import handle_digit_grid_click, handle_operands_grid_click, handle_execute_button_click
 from calculator.validators import PromptValidator
 from calculator.widgets import MainWindow, CalculatorWindow
 
@@ -32,8 +32,8 @@ class Calculator:
 
         self.main_window = MainWindow(width, height)
 
-        self.numbers_grid: QWidget = None
-        self.numbers_grid_buttons = [
+        self.digits_grid: QWidget = None
+        self.digits_grid_buttons = [
             [
                 QPushButton("1"),
                 QPushButton("2"),
@@ -73,8 +73,8 @@ class Calculator:
                 QPushButton(self.clear_button_text)
             ]
         ]
-        self.left_number_value = None
-        self.right_number_value = None
+        self.left_digit_value = None
+        self.right_digit_value = None
         self.current_operand = None
         self.operation_result = None
         self.execute_button: QPushButton = None
@@ -85,17 +85,17 @@ class Calculator:
         # ----------------------------------------------------------
         self.prompt_window_height = 0.2
 
-        self.numbers_grid_height = 1 - self.prompt_window_height
-        self.numbers_grid_width = 0.6
+        self.digits_grid_height = 1 - self.prompt_window_height
+        self.digits_grid_width = 0.6
 
-        self.operands_grid_width = 1 - self.numbers_grid_width
+        self.operands_grid_width = 1 - self.digits_grid_width
         self.operands_grid_height = 1 - self.prompt_window_height
         # ----------------------------------------------------------
 
         self.execute_button_width = None
         self.execute_button_height = None
-        self.number_button_width = None
-        self.number_button_height = None
+        self.digit_button_width = None
+        self.digit_button_height = None
         self.operand_button_width = None
         self.operand_button_height = None
         self.create_calculator()
@@ -115,40 +115,40 @@ class Calculator:
         btn.clicked.connect(click_handler)
 
     def create_digits_grid(self):
-        self.numbers_grid = QWidget(self.calculator_window)
-        self.numbers_grid.show()
+        self.digits_grid = QWidget(self.calculator_window)
+        self.digits_grid.show()
 
-        self.number_button_width = round(self.calculator_window.width() * (self.numbers_grid_width / 3))
-        self.number_button_height = round(self.calculator_window.height() * (self.numbers_grid_height / 5))
+        self.digit_button_width = round(self.calculator_window.width() * (self.digits_grid_width / 3))
+        self.digit_button_height = round(self.calculator_window.height() * (self.digits_grid_height / 5))
         grid_pos_x = 0
-        grid_pos_y = round(self.calculator_window.height() - 5 * self.number_button_height)
+        grid_pos_y = round(self.calculator_window.height() - 5 * self.digit_button_height)
 
-        self.numbers_grid.setGeometry(
+        self.digits_grid.setGeometry(
             grid_pos_x,
             grid_pos_y,
-            self.number_button_width * 3,
-            self.number_button_height * 4
+            self.digit_button_width * 3,
+            self.digit_button_height * 4
         )
 
-        for row, columns_list in enumerate(self.numbers_grid_buttons):
+        for row, columns_list in enumerate(self.digits_grid_buttons):
             if isinstance(columns_list, QPushButton):
                 button = columns_list
-                self.handle_button(button, self.numbers_grid, handle_number_grid_click)
+                self.handle_button(button, self.digits_grid, handle_digit_grid_click)
                 button.setGeometry(
                     0,
-                    3 * self.number_button_height,
-                    3 * self.number_button_width,
-                    1 * self.number_button_height
+                    3 * self.digit_button_height,
+                    3 * self.digit_button_width,
+                    1 * self.digit_button_height
                 )
                 continue
 
             for column, button in enumerate(columns_list):
-                self.handle_button(button, self.numbers_grid, handle_number_grid_click)
+                self.handle_button(button, self.digits_grid, handle_digit_grid_click)
                 button.setGeometry(
-                    column * self.number_button_width,
-                    row * self.number_button_height,
-                    self.number_button_width,
-                    self.number_button_height
+                    column * self.digit_button_width,
+                    row * self.digit_button_height,
+                    self.digit_button_width,
+                    self.digit_button_height
                 )
 
     def create_operands_grid(self):
@@ -196,9 +196,9 @@ class Calculator:
         self.execute_button.setStyleSheet(f"font-size: {round(self.main_window.font_size * 1.2)}px")
 
         coord_x = 0
-        coord_y = self.calculator_window.height() - self.number_button_height
+        coord_y = self.calculator_window.height() - self.digit_button_height
         exec_btn_width = self.calculator_window.width()
-        exec_btn_height = self.number_button_height
+        exec_btn_height = self.digit_button_height
 
         self.execute_button.setGeometry(coord_x, coord_y, exec_btn_width, exec_btn_height)
         self.execute_button.clicked.connect(handle_execute_button_click)
@@ -238,9 +238,9 @@ class Calculator:
     def execute_operation(self):
         try:
             self.operation_result: float | int = round(getattr(
-                self.left_number_value,
+                self.left_digit_value,
                 self.math_method_by_symbol[self.current_operand]
-            )(self.right_number_value), 3)
+            )(self.right_digit_value), 3)
         except ZeroDivisionError:
             self.operation_result = 0
 
@@ -251,8 +251,8 @@ class Calculator:
 
     def clear_all(self):
         self.current_operand = None
-        self.left_number_value = None
-        self.right_number_value = None
+        self.left_digit_value = None
+        self.right_digit_value = None
         self.operation_result = None
         self.prompt_window.clear()
         self.operation_window.clear()
