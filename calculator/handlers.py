@@ -8,6 +8,12 @@ class Handleable:
         self.prompt_window.insert(value)
 
     def handle_execute_button_click(self):
+        # Ignore clicks if previous result is ERR (terrible method)
+        if self.operation_result:
+            if isinstance(self.operation_result, str):
+                if self.operation_result.isalpha():
+                    return None
+
         if all((
                 self.previous_operand is not None,
                 self.current_operand is None,
@@ -51,6 +57,11 @@ class Handleable:
             self.clear_all()
             return None
 
+        if self.operation_result:
+            if isinstance(self.operation_result, str):
+                if self.operation_result.isalpha():
+                    return None
+
         if all((
                 self.operation_result is None,
                 all((
@@ -72,6 +83,7 @@ class Handleable:
             self.operation_window.setText(f"{self.left_digit_value} {self.current_operand}")
             return None
 
+        # Execute operation when both values are selected and go to next operation
         if all((
                 self.left_digit_value,
                 self.current_operand,
@@ -81,7 +93,6 @@ class Handleable:
 
             self.execute_operation()
 
-            self.operation_window.setText(str(self.operation_result))
             self.left_digit_value = self.operation_result
             self.right_digit_value = None
             self.operation_result = None

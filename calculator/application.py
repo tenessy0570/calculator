@@ -1,6 +1,13 @@
+import os
+import sys
+
+# https://stackoverflow.com/questions/38276027/import-statement-is-not-working-when-running-python-script-from-the-command-line
+path = os.getcwd()
+sys.path.append(path)
+
 from typing import Callable
 
-from PyQt6.QtWidgets import QApplication, QWidget, QPushButton, QMainWindow, QLineEdit, QLabel
+from PyQt6.QtWidgets import QApplication, QWidget, QPushButton, QLineEdit, QLabel
 
 from calculator.handlers import Handleable
 from calculator.validators import PromptValidator
@@ -254,7 +261,7 @@ class Calculator(Handleable):
         elif isinstance(self.operation_result, float) and self.operation_result.is_integer():
             self.operation_result = int(self.operation_result)
 
-        if len(str(self.operation_result)) > 8:
+        if len(str(int(self.operation_result))) > 8:
             self.operation_result = "ERR"
 
     def clear_all(self):
