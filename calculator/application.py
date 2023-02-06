@@ -2,12 +2,12 @@ from typing import Callable
 
 from PyQt6.QtWidgets import QApplication, QWidget, QPushButton, QMainWindow, QLineEdit, QLabel
 
-from calculator.handlers import handle_digit_grid_click, handle_operands_grid_click, handle_execute_button_click
+from calculator.handlers import Handleable
 from calculator.validators import PromptValidator
 from calculator.widgets import MainWindow, CalculatorWindow
 
 
-class Calculator:
+class Calculator(Handleable):
     def __init__(self, width: int, height: int) -> None:
         self.pyqt_app = QApplication([])
 
@@ -133,7 +133,7 @@ class Calculator:
         for row, columns_list in enumerate(self.digits_grid_buttons):
             if isinstance(columns_list, QPushButton):
                 button = columns_list
-                self.handle_button(button, self.digits_grid, handle_digit_grid_click)
+                self.handle_button(button, self.digits_grid, self.handle_digit_grid_click)
                 button.setGeometry(
                     0,
                     3 * self.digit_button_height,
@@ -143,7 +143,7 @@ class Calculator:
                 continue
 
             for column, button in enumerate(columns_list):
-                self.handle_button(button, self.digits_grid, handle_digit_grid_click)
+                self.handle_button(button, self.digits_grid, self.handle_digit_grid_click)
                 button.setGeometry(
                     column * self.digit_button_width,
                     row * self.digit_button_height,
@@ -171,7 +171,7 @@ class Calculator:
         for row, columns_list in enumerate(self.operands_grid_buttons):
             if isinstance(columns_list, QPushButton):
                 button = columns_list
-                self.handle_button(button, self.operands_grid, handle_operands_grid_click)
+                self.handle_button(button, self.operands_grid, self.handle_operands_grid_click)
                 button.setGeometry(
                     0,
                     3 * self.operand_button_height,
@@ -181,7 +181,7 @@ class Calculator:
                 continue
 
             for column, button in enumerate(columns_list):
-                self.handle_button(button, self.operands_grid, handle_operands_grid_click)
+                self.handle_button(button, self.operands_grid, self.handle_operands_grid_click)
                 button.setGeometry(
                     column * self.operand_button_width,
                     row * self.operand_button_height,
@@ -201,7 +201,7 @@ class Calculator:
         exec_btn_height = self.digit_button_height
 
         self.execute_button.setGeometry(coord_x, coord_y, exec_btn_width, exec_btn_height)
-        self.execute_button.clicked.connect(handle_execute_button_click)
+        self.execute_button.clicked.connect(self.handle_execute_button_click)
 
     def create_prompt_window(self):
         self.prompt_window = QLineEdit(self.calculator_window)
@@ -227,7 +227,10 @@ class Calculator:
     def create_operation_window(self):
         self.operation_window = QLabel(self.prompt_window)
         self.operation_window.show()
-        self.operation_window.setStyleSheet(f"font-size: {round(self.main_window.font_size * 0.5)}px")
+        self.operation_window.setStyleSheet(f"""
+        font-size: {round(self.main_window.font_size * 0.5)}px;
+        background-color: lightgrey
+""")
 
         width = round(self.prompt_window.geometry().width() * 0.55)
         height = round(self.prompt_window.geometry().height() * 0.7)
@@ -262,5 +265,5 @@ class Calculator:
 
 
 if __name__ == '__main__':
-    calc = Calculator(1324, 812)
+    calc = Calculator(1024, 612)
     calc.start()
