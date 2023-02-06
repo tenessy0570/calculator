@@ -49,9 +49,30 @@ class Calculator:
         self.operation_result = None
         self.execute_button: QPushButton = None
 
-        self.create_digits_grid()
-        self.create_operands_grid()
-        self.create_prompt_window()
+        # self.create_digits_grid()
+        # self.create_operands_grid()
+        # self.create_prompt_window()
+
+        self.calculator_window: QWidget = QWidget()
+        self.create_calculator()
+
+    @staticmethod
+    def center_widget(target: QWidget, parent_widget: QWidget):
+        coord_x = round(parent_widget.geometry().width() / 2) - round(target.width() / 2)
+        coord_y = round(parent_widget.geometry().height() / 2) - round(target.height() / 2)
+
+        target.setGeometry(coord_x, coord_y, target.width(), target.height())
+
+    def create_calculator(self):
+        self.calculator_window = QLabel(self.main_window)
+        self.calculator_window.child_widgets = []
+        self.calculator_window.show()
+
+        self.calculator_window.setFixedWidth(round(self.main_window.width() * 0.5))
+        self.calculator_window.setFixedHeight(round(self.main_window.height() * 0.6))
+        self.calculator_window.setStyleSheet("border: 1px solid black")
+
+        self.center_widget(self.calculator_window, self.main_window)
 
     def handle_number_grid_click(self, checked: bool):
         sender: QPushButton = self.numbers_grid.sender()
