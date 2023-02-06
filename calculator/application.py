@@ -139,12 +139,22 @@ class Calculator:
             if isinstance(columns_list, QPushButton):
                 button = columns_list
                 handle_button(button)
-                button.setGeometry(0, 3 * self.number_button_height, 3 * self.number_button_width, 1 * self.number_button_height)
+                button.setGeometry(
+                    0,
+                    3 * self.number_button_height,
+                    3 * self.number_button_width,
+                    1 * self.number_button_height
+                )
                 continue
 
             for column, button in enumerate(columns_list):
                 handle_button(button)
-                button.setGeometry(column * self.number_button_width, row * self.number_button_height, self.number_button_width, self.number_button_height)
+                button.setGeometry(
+                    column * self.number_button_width,
+                    row * self.number_button_height,
+                    self.number_button_width,
+                    self.number_button_height
+                )
 
     def create_operands_grid(self):
         self.operands_grid = QWidget(self.calculator_window)
@@ -155,7 +165,12 @@ class Calculator:
         grid_pos_x = round(self.calculator_window.width() - (self.operand_button_width * 2))
         grid_pos_y = self.calculator_window.height() - 5 * self.operand_button_height
 
-        self.operands_grid.setGeometry(grid_pos_x, grid_pos_y, self.operand_button_width * 2, self.operand_button_height * 4)
+        self.operands_grid.setGeometry(
+            grid_pos_x,
+            grid_pos_y,
+            self.operand_button_width * 2,
+            self.operand_button_height * 4
+        )
         self.operands_grid.setStyleSheet(f"font-size: {self.font_size}px")
 
         self.operands_grid_buttons = [
@@ -186,12 +201,21 @@ class Calculator:
             if isinstance(columns_list, QPushButton):
                 button = columns_list
                 handle_button(button)
-                button.setGeometry(0, 3 * self.operand_button_height, 2 * self.operand_button_width, 1 * self.operand_button_height)
+                button.setGeometry(
+                    0,
+                    3 * self.operand_button_height,
+                    2 * self.operand_button_width,
+                    1 * self.operand_button_height
+                )
                 continue
 
             for column, button in enumerate(columns_list):
                 handle_button(button)
-                button.setGeometry(column * self.operand_button_width, row * self.operand_button_height, self.operand_button_width, self.operand_button_height)
+                button.setGeometry(
+                    column * self.operand_button_width,
+                    row * self.operand_button_height,
+                    self.operand_button_width,
+                    self.operand_button_height)
 
     def create_execute_button(self):
         self.execute_button = QPushButton("=")
