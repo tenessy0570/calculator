@@ -1,4 +1,4 @@
-from PyQt6.QtWidgets import QApplication, QWidget, QPushButton, QMainWindow, QLineEdit
+from PyQt6.QtWidgets import QApplication, QWidget, QPushButton, QMainWindow, QLineEdit, QLabel
 
 from calculator.validators import PromptValidator
 
@@ -14,6 +14,7 @@ class Calculator:
         self.math_pow = "**"
         self.math_mod = "%"
         self.math_floordiv = "//"
+        self.clear_button_text = "C"
 
         self.math_method_by_symbol = {
             self.math_multiple: "__mul__",
@@ -38,8 +39,13 @@ class Calculator:
         self.numbers_grid: QWidget = None
         self.numbers_grid_buttons = None
         self.prompt_window: QLineEdit = None
+        self.operation_window: QLabel = None
         self.operands_grid: QWidget = None
-        self.operands_grid_buttons = None
+        self.operands_grid_buttons: list = None
+        self.left_number_value = None
+        self.right_number_value = None
+        self.current_operand = None
+        self.operation_result = None
 
         self.create_digits_grid()
         self.create_operands_grid()
@@ -49,6 +55,43 @@ class Calculator:
         sender: QPushButton = self.numbers_grid.sender()
         value = sender.text()
         self.prompt_window.insert(value)
+
+    def handle_operands_grid_click(self, checked: bool):
+        sender: QPushButton = self.operands_grid.sender()
+
+        if sender.text() == self.clear_button_text:
+            self.current_operand = None
+            self.left_number_value = None
+            self.right_number_value = None
+            self.operation_result = None
+            self.prompt_window.clear()
+            self.operation_window.clear()
+            return None
+
+        if not self.prompt_window.text() and not self.left_number_value:
+            return None
+
+        if self.left_number_value and self.current_operand:
+            self.right_number_value = int(self.prompt_window.text())
+
+            self.operation_result = round(getattr(
+                self.left_number_value,
+                self.math_method_by_symbol[self.current_operand]
+            )(self.right_number_value), 3)
+            self.operation_window.setText(
+                f"{self.left_number_value} {self.current_operand} {self.right_number_value} = {self.operation_result}"
+            )
+            return None
+
+        if self.left_number_value is not None:
+            self.current_operand = sender.text()
+            self.operation_window.setText(f"{self.left_number_value} {self.current_operand}")
+            return None
+
+        self.left_number_value = int(self.prompt_window.text())
+        self.current_operand = sender.text()
+        self.operation_window.setText(f"{self.left_number_value} {self.current_operand}")
+        self.prompt_window.setText("")
 
     def create_operands_grid(self):
         self.operands_grid = QWidget(self.main_window)
@@ -75,13 +118,16 @@ class Calculator:
                 QPushButton(self.math_pow),
                 QPushButton(self.math_mod),
             ],
-            QPushButton(self.math_floordiv)
+            [
+                QPushButton(self.math_floordiv),
+                QPushButton(self.clear_button_text)
+            ]
         ]
 
         def handle_button(btn):
             btn.setParent(self.operands_grid)
             btn.show()
-            btn.clicked.connect(self.handle_number_grid_click)
+            btn.clicked.connect(self.handle_operands_grid_click)
 
         for row, columns_list in enumerate(self.operands_grid_buttons):
             if isinstance(columns_list, QPushButton):
@@ -114,6 +160,16 @@ class Calculator:
             font-size: {self.font_size}px
         """)
         self.prompt_window.setMaxLength(8)
+
+        self.operation_window = QLabel(self.prompt_window)
+        self.operation_window.show()
+        self.operation_window.setStyleSheet(f"border: 1px solid black; font-size: {round(self.font_size * 0.5)}px")
+
+        width = round(self.prompt_window.geometry().width() * 0.6)
+        height = round(self.prompt_window.geometry().height() * 0.7)
+        coord_x = self.prompt_window.geometry().width() - width - 5
+        coord_y = round(self.prompt_window.geometry().height() * 0.1)
+        self.operation_window.setGeometry(coord_x, coord_y, width, height)
 
     def create_digits_grid(self):
         self.numbers_grid = QWidget(self.main_window)
