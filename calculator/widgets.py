@@ -8,23 +8,25 @@ class MainWindow(QMainWindow):
         self.setFixedWidth(width)
         self.setFixedHeight(height)
         self.font_size = round(
-            (self.geometry().height() * 0.05) + (self.geometry().width() * 0.02) / 2
+            (self.height() * 0.05) + (self.width() * 0.02) / 2
         )
         self.setStyleSheet(f"font-size: {self.font_size}px")
         self.show()
 
 
-class OperandsGrid(QWidget):
-    def __init__(self, main_window: MainWindow, *args, **kwargs):
-        super(OperandsGrid, self).__init__(main_window, *args, **kwargs)
+class CalculatorWindow(QWidget):
+    def __init__(self, parent_window, *args, **kwargs):
+        super(CalculatorWindow, self).__init__(parent_window, *args, **kwargs)
         self.show()
-        self.buttons = []
 
-        self.button_width = round(main_window.geometry().width() * 0.11)
-        self.button_height = round(main_window.geometry().height() * 0.14)
+        self.setFixedWidth(round(parent_window.width() * 0.6))
+        self.setFixedHeight(round(parent_window.height() * 0.75))
 
-        pos_x = round(main_window.geometry().x() + self.geometry().width()) + 5
-        pos_y = main_window.geometry().y()
+        self.center_widget(self, parent_window)
 
-        self.setGeometry(pos_x, pos_y, self.button_width * 2, self.button_height * 4)
-        self.setStyleSheet(f"font-size: {main_window.font_size}px")
+    @staticmethod
+    def center_widget(target: QWidget, parent_widget: QWidget):
+        coord_x = round(parent_widget.geometry().width() / 2) - round(target.width() / 2)
+        coord_y = round(parent_widget.geometry().height() / 2) - round(target.height() / 2)
+
+        target.setGeometry(coord_x, coord_y, target.width(), target.height())
