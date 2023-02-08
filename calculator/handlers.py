@@ -1,7 +1,12 @@
 from PyQt6.QtWidgets import QPushButton
 
+from calculator.mixins import CalculableMixin, ContainsQWidgetWindowsMixin
 
-class Handleable:
+
+class Handleable(CalculableMixin, ContainsQWidgetWindowsMixin):
+    def __init__(self, *args, **kwargs):
+        super(Handleable, self).__init__(*args, **kwargs)
+
     def handle_digit_grid_click(self):
         sender: QPushButton = self.digits_grid.sender()
         value = sender.text()
